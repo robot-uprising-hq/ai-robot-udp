@@ -20,7 +20,7 @@ char get_user_input_character(char *prompt, bool is_silent) {
     char user_input = 255;
     while (user_input == 255) {
         user_input = fgetc(stdin);
-        vTaskDelay(10/portTICK_RATE_MS);
+        vTaskDelay(10/portTICK_PERIOD_MS);
     }
     if (!is_silent) {
         printf("%c\r\n", user_input);
@@ -32,7 +32,7 @@ char* get_user_input_string(char *prompt) {
     char* line = NULL;
     while(line == NULL) {
         line = linenoise(prompt);
-        vTaskDelay(10/portTICK_RATE_MS);
+        vTaskDelay(10/portTICK_PERIOD_MS);
     }
     return line;
 }
@@ -146,7 +146,7 @@ void console_task(void *ip_address)
     initialize_console();
 
     // wait for a second for the other tasks to stop outputting init messages
-    vTaskDelay(1000/portTICK_RATE_MS);
+    vTaskDelay(1000/portTICK_PERIOD_MS);
 
     // ensure the user sees the welcome screen by waiting for key press
     get_user_input_character("Press any key to start terminal", true);
