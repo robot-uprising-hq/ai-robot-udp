@@ -31,7 +31,7 @@ You can connect for example using screen or the monitor command if you have the 
 ![screenshot](screenshot.png)
 
 To connect to WiFi, press any key to open the terminal and then press the `w` key. The terminal will prompt you for the WiFi ssid and password and then reboot the robot. After rebooting, you can use the `i` command to check the ip that was assigned to the robot during startup.
-In some cases the firmware has been known to report the wrong ip when using incompatible versions of esp-idf. If you don't get a local network ip (usually starting with 192.168), you can try finding out your ip from the logs the firmware outputs while booting or from the wifi routers admin interface.
+In some cases the firmware has been known to report the wrong ip when using incompatible versions of esp-idf. If you don't get a local network ip (usually starting with 192.168), you can try finding out your ip from the logs the firmware outputs while booting or from the wifi routers admin interface. This version has been tested to work with esp-idf 5.4.
 
 ### Controlling the robot
 
@@ -77,4 +77,4 @@ To take a look at the log output or connect to the built in console, you can:
 
     idf.py -p [port] monitor
 
-To exit the monitor press `ctrl + ]` (`ctrl + 5` On a Finnish keyboard)
+To exit the monitor press `ctrl + ]` (`ctrl + 5` or `ctrl + å` On a Finnish keyboard)
