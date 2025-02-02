@@ -20,15 +20,18 @@ Connect the right motor to connector J2 and the left motor to J3.
 
 - Make sure the firmware has been flashed
 - Connect board to computer via USB
-- Establish [serial connection](https://docs.espressif.com/projects/esp-idf/en/release-v4.1/get-started/establish-serial-connection.html)
+- Establish [serial connection](https://docs.espressif.com/projects/esp-idf/en/v5.4/esp32/get-started/establish-serial-connection.html)
 
 You can connect for example using screen or the monitor command if you have the Espressif toolchain installed:
 
     screen [port] 115200
+    # or using the Espressif toolchain:
+    idf.py -p [port] monitor
 
 ![screenshot](screenshot.png)
 
 To connect to WiFi, press any key to open the terminal and then press the `w` key. The terminal will prompt you for the WiFi ssid and password and then reboot the robot. After rebooting, you can use the `i` command to check the ip that was assigned to the robot during startup.
+In some cases the firmware has been known to report the wrong ip when using incompatible versions of esp-idf. If you don't get a local network ip (usually starting with 192.168), you can try finding out your ip from the logs the firmware outputs while booting or from the wifi routers admin interface.
 
 ### Controlling the robot
 
@@ -41,7 +44,11 @@ Or by modifying and running the [python example](examples/send-udp.py)
 
 ## Flashing the firmware
 
-Install the Espressif toolchain: https://docs.espressif.com/projects/esp-idf/en/release-v4.1/
+Install the Espressif toolchain v5.4: https://docs.espressif.com/projects/esp-idf/en/v5.4/esp32/get-started/index.html
+
+Set up the ESP-IDF Environment variables, if you have not already done so:
+
+    . $HOME/esp/esp-idf/export.sh
 
 Build and flash the project:
 
@@ -50,6 +57,11 @@ Build and flash the project:
 
 
 ## Troubleshooting
+
+If you have trouble building, you can remove the build folder by running:
+
+    idf.py fullclean
+
 
 If you have trouble flashing, you can try running menuconfig and ensure that:
 
