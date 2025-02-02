@@ -41,9 +41,13 @@ char* get_user_input_string(char *prompt) {
 
 void show_help()
 {
-    printf("robot > no mercy for the helpless \n"
-        "robot > just follow the instructions \n"
-        "robot > press y to continue \n");
+    printf("\n"
+           "robot > ***** MicroInvaderBot Terminal ***** \n"
+           "robot > ==================================== \n"
+           "robot > h: help \n"
+           "robot > i: show IP address \n"
+           "robot > w: configure Wi-Fi \n"
+           "robot > b: configure Bluetooth \n");
 }
 
 void print_sad_message()
@@ -155,13 +159,7 @@ void console_task()
         linenoiseSetDumbMode(1);
     }
 
-    printf("\n"
-           "robot > ***** MicroInvaderBot Terminal ***** \n"
-           "robot > ==================================== \n"
-           "robot > h: help \n"
-           "robot > i: show IP address \n"
-           "robot > w: configure Wi-Fi \n"
-           "robot > b: configure Bluetooth \n");
+    show_help();
 
     char selection;
     while(true)
@@ -181,9 +179,6 @@ void console_task()
                 break;
             case 'b':
                 printf("%sUnfortunately Bluetooth configuration has not been implemented yet.\n", ROBOT_PROMPT);
-                break;
-            case 'y':
-                printf("%snice\n", ROBOT_PROMPT);
                 break;
             default:
                 print_sad_message();
