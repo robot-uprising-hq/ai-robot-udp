@@ -69,8 +69,12 @@ void print_sad_message()
 void show_ip()
 {
     char* ip = get_ip_address();
-    printf("%sIP address: %s\n", ROBOT_PROMPT, ip);
-    free(ip);
+    if (ip == NULL) {
+        printf("%sFailed to get IP\n", ROBOT_PROMPT);
+    } else {
+        printf("%sIP address: %s\n", ROBOT_PROMPT, ip);
+        free(ip);
+    }
 }
 
 void configure_wifi()
