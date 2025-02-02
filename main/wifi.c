@@ -1,5 +1,6 @@
 #include "wifi.h"
 
+#include <arpa/inet.h>
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -38,13 +39,13 @@ static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
         ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
         esp_ip_address = &event->ip_info.ip;
-        ESP_LOGI(TAG, "got ip: " IPSTR, IP2STR(&event->ip_info.ip));
+        ESP_LOGI(TAG, "got ip: " IPSTR, IP2STR(esp_ip_address));
         s_retry_num = 0;
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
 }
 
-void* connect_wifi()
+void connect_wifi()
 {
     s_wifi_event_group = xEventGroupCreate();
 
@@ -87,11 +88,31 @@ void* connect_wifi()
         ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler));
         vEventGroupDelete(s_wifi_event_group);
     }
+}
 
-    if (esp_ip_address == NULL) {
-        return "Connection error";
+char* get_ip_address() {
+    esp_netif_ip_info_t ip_info;
+    esp_netif_t *netif = esp_netif_get_default_netif();
+
+    if (netif == NULL) {
+        ESP_LOGI(TAG, "No default network interface found!");
+        return NULL; // Or handle the error as needed
     }
-    void *ip_address = malloc(16 * sizeof(char));
-    esp_ip4addr_ntoa(esp_ip_address, ip_address, 16);
-    return ip_address;
+
+    if (esp_netif_get_ip_info(netif, &ip_info) != ESP_OK) {
+        ESP_LOGI(TAG, "Could not get IP information!");
+        return NULL;
+    }
+
+    char *ip_address_str = malloc(16 * sizeof(char));
+    struct in_addr addr;
+    addr.s_addr = ip_info.ip.addr;
+
+    if (inet_ntoa_r(addr, ip_address_str, 16) == NULL) {
+        ESP_LOGI(TAG, "IP address conversion failed!");
+        free(ip_address_str);
+        return NULL;
+    }
+
+    return ip_address_str;
 }

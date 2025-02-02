@@ -67,7 +67,7 @@ void app_main(void)
 {
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
-    void *ip_address = connect_wifi();
+    connect_wifi();
 
     // Subcomponent setup
     motor_control_setup();
@@ -79,7 +79,7 @@ void app_main(void)
     xTaskCreate(led_control_task, "led_control", 4096, NULL, 5, NULL);
     xTaskCreate(battery_monitor_task, "battery_monitor", 4096, NULL, 5, NULL);
     xTaskCreate(udp_server_task, "udp_server", 4096, (void*)AF_INET, 5, NULL);
-    xTaskCreate(console_task, "console", 4096, ip_address, 5, NULL);
+    xTaskCreate(console_task, "console", 4096, NULL, 5, NULL);
     
 #ifdef TEST_MODE
     device_test();

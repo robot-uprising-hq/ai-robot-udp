@@ -1,1 +1,1 @@
-void console_task(void *ip_address);
+void console_task();

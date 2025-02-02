@@ -4,13 +4,15 @@
 #include "esp_log.h"
 #include "esp_console.h"
 #include "esp_vfs_dev.h"
-#include "esp_wifi.h"
 #include "esp_vfs_fat.h"
+#include "esp_wifi.h"
 #include "driver/uart.h"
 #include "linenoise/linenoise.h"
 #include "argtable3/argtable3.h"
 #include "lwip/err.h"
 #include "lwip/sys.h"
+
+#include "wifi.h"
 
 char *USER_PROMPT = " user > ";
 char *ROBOT_PROMPT = "robot > ";
@@ -60,18 +62,11 @@ void print_sad_message()
     printf("%s%s\n", ROBOT_PROMPT, sad_messages[message_id]);
 }
 
-void show_ip(void* ip_address)
+void show_ip()
 {
-    /* For some reason this does not seem to work:
-    esp_netif_ip_info_t ip_info;
-    if (esp_netif_get_ip_info(ESP_IF_WIFI_STA, &ip_info) == ESP_OK) {
-        printf("IP address: " IPSTR "\n", IP2STR(&ip_info.ip));
-    } else {
-        printf("Could not get IP address.\n");
-    }
-    As a workaround the ip address is passed along to this task
-    */
-    printf("%sIP address: %s\n", ROBOT_PROMPT, (char*)ip_address);
+    char* ip = get_ip_address();
+    printf("%sIP address: %s\n", ROBOT_PROMPT, ip);
+    free(ip);
 }
 
 void configure_wifi()
@@ -141,7 +136,7 @@ void initialize_console()
     linenoiseHistorySetMaxLen(100);*/
 }
 
-void console_task(void *ip_address)
+void console_task()
 {
     initialize_console();
 
@@ -179,7 +174,7 @@ void console_task(void *ip_address)
                 show_help();
                 break;
             case 'i':
-                show_ip(ip_address);
+                show_ip();
                 break;
             case 'w':
                 configure_wifi();
