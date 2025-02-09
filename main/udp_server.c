@@ -46,16 +46,23 @@ void udp_server_task(void *pvParameters)
         }
         ESP_LOGI(TAG, "Socket created");
 
+        // Set timeout
+        struct timeval timeout;
+        timeout.tv_sec = 5;
+        timeout.tv_usec = 0;
+        setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout);
+
         int err = bind(sock, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
         if (err < 0) {
             ESP_LOGE(TAG, "Socket unable to bind: errno %d", errno);
         }
         ESP_LOGI(TAG, "Socket bound, port %d", UDP_PORT);
 
+        struct sockaddr_in6 source_addr; // Large enough for both IPv4 or IPv6
+        socklen_t socklen = sizeof(source_addr);
+
         while (1) {
             ESP_LOGI(TAG, "Waiting for data");
-            struct sockaddr_in6 source_addr; // Large enough for both IPv4 or IPv6
-            socklen_t socklen = sizeof(source_addr);
             int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer) - 1, 0, (struct sockaddr *)&source_addr, &socklen);
 
             if (len < 0) {
@@ -95,6 +102,7 @@ void udp_server_task(void *pvParameters)
                     break;
                 }
             }
+
         }
 
         if (sock != -1) {
