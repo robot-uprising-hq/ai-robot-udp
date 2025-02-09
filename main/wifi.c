@@ -94,7 +94,7 @@ char* get_ip_address() {
 
     if (netif == NULL) {
         ESP_LOGI(TAG, "No default network interface found!");
-        return NULL; // Or handle the error as needed
+        return NULL;
     }
 
     if (esp_netif_get_ip_info(netif, &ip_info) != ESP_OK) {
