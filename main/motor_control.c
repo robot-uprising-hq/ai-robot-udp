@@ -4,16 +4,22 @@
 #include "freertos/task.h"
 
 #include "driver/gpio.h"
-#include "driver/mcpwm.h" 
+#include "driver/mcpwm.h"
+#include "esp_timer.h"
 
 #include "math.h"
 #include "stdio.h"
 
+const int TIMEOUT_MILLISECONDS = 1000;
+const float FADE_MILLISECONDS = 2000.0;
 float motor_value_left = 0;
 float motor_value_right = 0;
+unsigned long int last_command_received = 0;
+
 
 void motor_control_set_values(float motor_left, float motor_right)
 {
+    last_command_received = esp_timer_get_time() / 1000;
     motor_value_left = motor_left;
     motor_value_right = motor_right;
 }
@@ -76,7 +82,14 @@ void set_motor_directions()
 
 void set_motor_pwm(int motor, float pwm)
 {
-    float absolute_pwm = fabs(pwm);
+    float timeout_fade_factor = 1.0;
+    unsigned long int time_since_last_command = (esp_timer_get_time() / 1000) - last_command_received;
+    if (time_since_last_command > TIMEOUT_MILLISECONDS) {
+        timeout_fade_factor = 1.0 - ((time_since_last_command - TIMEOUT_MILLISECONDS) / FADE_MILLISECONDS);
+    }
+    timeout_fade_factor = timeout_fade_factor < 0.05 ? 0 : timeout_fade_factor;
+
+    float absolute_pwm = fabs(pwm) * timeout_fade_factor;
     // TODO: protect motor_x_pwm variables with mutexes
     if (absolute_pwm > 100)
     {
