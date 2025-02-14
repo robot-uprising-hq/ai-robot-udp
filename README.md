@@ -55,6 +55,7 @@ Build and flash the project:
     idf.py build
     idf.py -p [port] flash
 
+The old precompiled build for esp-idf 5.3.0 can be found in [releases](https://github.com/robot-uprising-hq/ai-robot-udp/releases/)
 
 ## Troubleshooting
 
