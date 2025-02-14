@@ -12,3 +12,4 @@ _deps
 
 build/
 sdkconfig.old
+.DS_Store
